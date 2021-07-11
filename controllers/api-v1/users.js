@@ -58,9 +58,9 @@ router.get('/', (req, res) => {
 
 
 //get /users == test api endpoint
-router.get('/', (req, res) => {
-    res.json({msg: 'hi! the user endpoint is ok'})
-})
+// router.get('/', (req, res) => {
+//     res.json({msg: 'hi! the user endpoint is ok'})
+// })
 
 // post /users == create a new user
 router.post('/register', async (req, res) => {
