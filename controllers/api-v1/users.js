@@ -51,10 +51,10 @@ const authLockedRoute = require('./authLockedRoute.js')
 // })
 
 // Get for authorized route (Profile?)
-router.get('/', (req, res) => {
-    // Sends private data
-    res.json({ msg: 'Hi! I am your profile 👋'})
-})
+// router.get('/', (req, res) => {
+//     // Sends private data
+//     res.json({ msg: 'Hi! I am your profile 👋'})
+// })
 
 
 //get /users == test api endpoint

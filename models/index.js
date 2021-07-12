@@ -26,5 +26,7 @@ const connect = () => {
 
 module.exports = {
     connect,
-    User: mongoose.model('user', require('./User.js'))
+    User: mongoose.model('user', require('./User.js')),
+    Calendar: mongoose.model('calendar', require('./Calendar.js')),
+    Event: mongoose.model('event', require('./Event.js')),
 }
