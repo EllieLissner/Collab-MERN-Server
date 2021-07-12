@@ -8,13 +8,9 @@ const CalendarSchema = new mongoose.Schema({
         required: true,
     },    
     events: [events],
-    People: [{
+    people: [{
         userId: {
             type: String,
-        },
-        permission: {
-            type: String,
-            default: 'view'
         }
     }] 
 }, {
