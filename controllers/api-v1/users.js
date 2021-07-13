@@ -4,59 +4,6 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const authLockedRoute = require('./authLockedRoute.js')
 
-
-// GET for '/'
-// router.get('/', (req, res) => {
-//     res.json({ msg: 'Hi! I am the user endpoint! 👋'})
-// })
-
-// Post stub (Register?)
-// router.post('', (req, res) => {
-//     try {
-
-//     } catch(err) {
-//         console.log(err)
-//         //res.status code
-//     }
-// })
-
-// POST stub (Login?)
-// router.post('', (req, res) => {
-//     try {
-
-//     } catch(err) {
-//         console.log(err)
-//         //res.status code
-//     }
-// })
-
-// PUT Stub (Can be moved)
-// router.put('', (req, res) => {
-//     try {
-
-//     } catch(err) {
-//         console.log(err)
-//         //res.status code
-//     }
-// })
-
-// Delete Stub (Can be moved)
-// router.destroy('', (req, res) => {
-//     try {
-
-//     } catch(err) {
-//         console.log(err)
-//         //res.status code
-//     }
-// })
-
-// Get for authorized route (Profile?)
-// router.get('/', (req, res) => {
-//     // Sends private data
-//     res.json({ msg: 'Hi! I am your profile 👋'})
-// })
-
-
 //get /users == test api endpoint
 router.get('/', (req, res) => {
     res.json({msg: 'hi! the user endpoint is ok'})
@@ -100,6 +47,7 @@ router.post('/register', async (req, res) => {
         res.status(500).json({msg: 'internal server error'})
     }
 })
+
 //post /user/login -- validate login creds
 router.post('/login', async (req, res) => {
     try{
@@ -132,11 +80,46 @@ router.post('/login', async (req, res) => {
     }
 })
 // get /auth-locked -- will redirect if a bad (or no) jwt is found
-router.get('/auth-locked', authLockedRoute, (req, res) => {
+router.get('/profile', (req, res) => {
     // do whatever we like with the user
     console.log(res.locals.user)
     // send private data back
-    res.json({msg: 'welcome to the auth-locked route you lucky dog! 🐩'})
+    res.json({msg: 'welcome to your profile, select or create a calendar'})
+})
+
+router.get('/calendars', async (req, res) => {
+    res.json({msg: 'hi, user calendars is ok!'})
+})
+
+// Make new calendar
+router.post('/calendars/createCal', async (req, res) => {
+    try{
+        const userCalendar = {}
+        const newCal = db.Calendar({
+            name: req.body.name,
+            userId: user._id
+            // eventTypes: [
+                //     {eventTypeId: 0, name: 'Holiday'},
+                //     {eventTypeId: 1, name: 'Meeting'},
+                //     {eventTypeId: 2, name: 'Work'},
+                //     {eventTypeId: 3, name:'Appointment'},
+                //     {eventTypeId: 4, name: 'Birthday'},
+                //     {eventTypeId: 5, name: 'School'}
+                // ],
+                // people: [{
+                    //     userId: user._id,
+                    //     permission: 'edit'
+                    // }]
+        })
+            console.log(newCal)
+            await db.Calendar.save()
+
+            userCalendar.push(newCal)
+            res.json('Calendar created!')
+            res.redirect('/calendars')    
+        }catch(err){
+        console.log('Calendar creation failed!')
+    }
 })
 
 module.exports = router

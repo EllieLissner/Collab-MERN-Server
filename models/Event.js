@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const EventSchema = new mongoose.Schema({
     name: String,
     startDate: String,
-    EndDate: String,
+    endDate: String,
     startTime: String,
     endTime: String,
     repeating: Number,

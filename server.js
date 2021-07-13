@@ -17,6 +17,7 @@ app.use(cors())
 app.use(express.urlencoded({extended: false}))
 app.use(express.json()) // for the request body
 app.use('/api-v1/users', require('./controllers/api-v1/users.js'))
+
 //custom middleware
 app.use((req, res, next) => {
     console.log(`incoming request on ${req.method} ${req.url}`)
@@ -33,6 +34,8 @@ app.get('/', middleWare, (req, res) => {
     console.log(res.locals)
     res.json({msg: 'hello from the back end'})
 })
+
+
 
 // listen on a port
 app.listen(PORT, () => {
