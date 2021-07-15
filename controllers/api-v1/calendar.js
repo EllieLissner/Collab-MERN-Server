@@ -82,7 +82,7 @@ router.put('/editevent/:id', async (req, res) => {
 router.delete('/deleteevent/:id', async (req, res) => {
     try{
         const deleteEvent = await db.Event.findByIdAndDelete(req.params.id)
-        // res.redirect('/api-v1/calendar/allEvents')
+        // res.redirect('/api-v1/calendar/allevents')
     }catch(error){
         res.status(500).json({msg: 'Event deletion failed!'})
     }
