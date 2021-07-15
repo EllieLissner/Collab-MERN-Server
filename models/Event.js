@@ -1,13 +1,23 @@
 const mongoose = require('mongoose')
 
 const EventSchema = new mongoose.Schema({
-    name: String,
-    startDate: String,
-    EndDate: String,
-    startTime: String,
-    endTime: String,
-    repeating: Number,
-    priority: {type: Number, default: 1}
+
+            kind: String,
+            title: String,
+            description: String,
+            location: String,
+            creator: {
+              name: String,
+              userId: String,
+            },
+            start: {
+              date: String,
+              time: { hours: String, minutes: String, ap: String, allday: Boolean },
+            },
+            end: {
+              date: String,
+              time: { hours: String, minutes: String, ap: String, allday: Boolean },
+            }
 }, {
     timestamps: true
 })
