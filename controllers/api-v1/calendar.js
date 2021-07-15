@@ -2,15 +2,6 @@ const router = require('express').Router()
 const { format, startOfDay } = require('date-fns')
 const db = require('../../models')
 
-//get /users == test api endpoint
-router.get('/', (req, res) => {
-    res.json({msg: 'hi! the calendar endpoint is ok'})
-})
-
-const today = new Date()
-const format1 = format(today, 'MM/dd/yyyy')
-const format2 = startOfDay(today)
-console.log({today, format1, format2: format2.toISOString()})
 
 //get route to render events for today
 router.get('/event', async (req, res) => {
@@ -34,15 +25,27 @@ router.get('/event', async (req, res) => {
 // post /users == create a new user
 router.post('/createEvent', async (req, res) => {
     try{
-
+        console.log(req.body)
         // create our new calendar
         const newEvent = db.Event({
+
+            kind: req.body.kind,
             title: req.body.title,
-            startDate: req.body.startDate,
-            endDate: req.body.endDate,
-            startTime: req.body.startTime,
-            endTime: req.body.endTime,
-            location: req.body.location
+            description: req.body.description,
+            location: req.body.location,
+            creator: {
+              name: req.body.name,
+              userId: req.body.userId,
+            },
+            start: {
+              date: req.body.start.date,
+              time: { hours: req.body.start.time.hours, minutes: req.body.start.time.minutes, ap: req.body.start.time.ap, allday: req.body.start.time.allday },
+            },
+            end: {
+              date: req.body.end.date,
+              time: { hours: req.body.end.time.hours, minutes: req.body.end.time.minutes, ap: req.body.end.time.ap, allday: req.body.end.time.allday },
+            }
+        
         })
         
         await newEvent.save()
