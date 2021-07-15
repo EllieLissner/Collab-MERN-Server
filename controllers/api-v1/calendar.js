@@ -12,7 +12,7 @@ const format1 = format(today, 'MM/dd/yyyy')
 const format2 = startOfDay(today)
 console.log({today, format1, format2: format2.toISOString()})
 
-//ellie test get route
+//get route to render events for today
 router.get('/event', async (req, res) => {
     try{
         const events = await db.Event.find({"start.date": startOfDay( new Date()).toISOString()})
@@ -29,7 +29,7 @@ router.get('/event', async (req, res) => {
         res.status(500).send(error)
     }
 })
-//end ellie test get route
+
 
 // post /users == create a new user
 router.post('/createEvent', async (req, res) => {
