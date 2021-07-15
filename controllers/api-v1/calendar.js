@@ -15,9 +15,7 @@ router.get('/event', async (req, res) => {
             })
         }
     }catch(error) {
-        console.log(error)
-        
-        res.status(500).send(error)
+        res.status(500).send(error)({msg: 'Get events failed!'})
     }
 })
 
@@ -30,11 +28,10 @@ router.get('/allevents', async (req, res) => {
     }
 })
 
-// post /users == create a new user
+// post /createEvent == create a new event
 router.post('/createEvent', async (req, res) => {
     try{
-        console.log(req.body)
-        // create our new calendar
+        // create our new event
         const newEvent = db.Event({
 
             kind: req.body.kind,
@@ -57,8 +54,6 @@ router.post('/createEvent', async (req, res) => {
         })
         
         await newEvent.save()
-        res.json('Event created!')
-        console.log(newEvent)
 
         // const foundEvent = await db.Event.findOne({
         //     name: req.body.name,
@@ -67,7 +62,6 @@ router.post('/createEvent', async (req, res) => {
         // res.json({ msg: 'Users Populated!'})
         // console.log(foundEvent)
     }catch(error) {
-        console.log(error)
         res.status(500).json({msg: 'Event creation failed!'})
     }
 })
@@ -85,6 +79,13 @@ router.put('/editevent/:id', async (req, res) => {
     }
 })
 
-
+router.delete('/deleteevent/:id', async (req, res) => {
+    try{
+        const deleteEvent = await db.Event.findByIdAndDelete(req.params.id)
+        // res.redirect('/api-v1/calendar/allevents')
+    }catch(error){
+        res.status(500).json({msg: 'Event deletion failed!'})
+    }
+})
 
 module.exports = router
