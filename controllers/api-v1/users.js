@@ -15,10 +15,12 @@ router.post('/register', async (req, res) => {
         //check if user already exists
         const findUser = await db.User.findOne({
             email: req.body.email
-        })
+        }).populate('events')
+        console.log('Events populated!')
+        console.log(findUser)
+
         //if the user is found, don't let them register
         if(findUser) return res.status(400).json({ msg: 'user already exists in the DB'})
-        console.log(findUser)
         //hash password from req.body
         const password = req.body.password
         const salt = 12
@@ -31,17 +33,20 @@ router.post('/register', async (req, res) => {
         })
 
         await newUser.save()
+        res.json('User created!')
+        console.log(newUser)
 
         //create the jwt payload
-        const payload = {
-            name: newUser.name,
-            email: newUser.email,
-            id: newUser.id
-        }
+        // const payload = {
+        //     name: newUser.name,
+        //     email: newUser.email,
+        //     id: newUser.id,
+        //     events: []
+        // }
 
         //sign the jwt and send a response
-        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 60 * 60})
-        res.json({token})
+        // const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 60 * 60})
+        // res.json({token})
     }catch(error) {
         console.log(error)
         res.status(500).json({msg: 'internal server error'})
@@ -79,47 +84,13 @@ router.post('/login', async (req, res) => {
         res.status(500).json({msg: 'internal server error'})
     }
 })
+
 // get /auth-locked -- will redirect if a bad (or no) jwt is found
-router.get('/profile', (req, res) => {
+router.get('/auth-locked', authLockedRoute, (req, res) => {
     // do whatever we like with the user
     console.log(res.locals.user)
     // send private data back
-    res.json({msg: 'welcome to your profile, select or create a calendar'})
-})
-
-router.get('/calendars', async (req, res) => {
-    res.json({msg: 'hi, user calendars is ok!'})
-})
-
-// Make new calendar
-router.post('/calendars/createCal', async (req, res) => {
-    try{
-        const userCalendar = {}
-        const newCal = db.Calendar({
-            name: req.body.name,
-            userId: user._id
-            // eventTypes: [
-                //     {eventTypeId: 0, name: 'Holiday'},
-                //     {eventTypeId: 1, name: 'Meeting'},
-                //     {eventTypeId: 2, name: 'Work'},
-                //     {eventTypeId: 3, name:'Appointment'},
-                //     {eventTypeId: 4, name: 'Birthday'},
-                //     {eventTypeId: 5, name: 'School'}
-                // ],
-                // people: [{
-                    //     userId: user._id,
-                    //     permission: 'edit'
-                    // }]
-        })
-            console.log(newCal)
-            await db.Calendar.save()
-
-            userCalendar.push(newCal)
-            res.json('Calendar created!')
-            res.redirect('/calendars')    
-        }catch(err){
-        console.log('Calendar creation failed!')
-    }
+    res.json({msg: 'welcome to the auth-locked route you lucky dog! 🐩'})
 })
 
 module.exports = router
