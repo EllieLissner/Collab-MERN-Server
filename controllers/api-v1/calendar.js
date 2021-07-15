@@ -64,46 +64,42 @@ router.post('/createEvent', async (req, res) => {
     }
 })
 
-// router.get('')
+router.put('/editevent/:id', async (req, res) => {
+    try {
+        const updateEvent = await db.Event.findById(req.params.id)
+        updateEvent.kind = req.body.kind
+        updateEvent.title = req.body.title
+        updateEvent.description = req.body.description
+        updateEvent.location = req.body.location
+        updateEvent.creator.name = req.body.name
+        updateEvent.creator.userId = req.body.userId
+        updateEvent.start.date = req.body.start.date
+        updateEvent.start.time.hours = req.body.start.time.hours
+        updateEvent.start.time.minutes = req.body.start.time.minutes
+        updateEvent.start.time.ap = req.body.start.time.ap
+        updateEvent.start.time.allday = req.body.start.time.allday
+        // updateEvent.start = {
+        //       date = req.body.start.date,
+        //       time = { hours = req.body.start.time.hours, minutes = req.body.start.time.minutes, ap = req.body.start.time.ap, allday = req.body.start.time.allday },
+        //     },
+        updateEvent.end.date = req.body.end.date
+        updateEvent.end.time.hours = req.body.end.time.hours
+        updateEvent.end.time.minutes = req.body.end.time.minutes
+        updateEvent.end.time.ap = req.body.end.time.ap
+        updateEvent.end.time.allday = req.body.end.time.allday
+        // updateEvent.end = {
+        //       date = req.body.end.date,
+        //       time = { hours = req.body.end.time.hours, minutes = req.body.end.time.minutes, ap = req.body.end.time.ap, allday = req.body.end.time.allday },
+        //     }
 
-//post /user/login -- validate login creds
-// router.post('/login', async (req, res) => {
-//     try{
-//         // try to find the user in the db from the req.body.email
-//         const findUser = await db.User.findOne({
-//             email: req.body.email
-//         })
+        await updateEvent.save()
+        res.send(updateEvent)
 
-//         const validationFailedMessage = 'Incorrect username or password 😢'
-//         //if the user is not found -- return immediately
-//         if(!findUser) return res.status(400).json({msg: validationFailedMessage})
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
 
-//         // check the users password against what is in the req.body
-//         const matchPassword = await bcrypt.compare(req.body.password, findUser.password)
 
-//         //if the password doesnt match -- return immediately
-//         if(!matchPassword) return res.status(400).json({msg: validationFailedMessage})
-//         // create the jwt payload
-//         const payload = {
-//             name: findUser.name,
-//             email: findUser.email,
-//             if: findUser.id
-//         }
-//         //sign the jwt and send it back
-//         const token = await jwt.sign(payload, process.env.JWT_SECRET,{ expiresIn: 60 * 60})
-//         res.json({ token })
-//     }catch (err) {
-//         console.log(error)
-//         res.status(500).json({msg: 'internal server error'})
-//     }
-// })
-
-// get /auth-locked -- will redirect if a bad (or no) jwt is found
-// router.get('/auth-locked', authLockedRoute, (req, res) => {
-//     // do whatever we like with the user
-//     console.log(res.locals.user)
-//     // send private data back
-//     res.json({msg: 'welcome to the auth-locked route you lucky dog! 🐩'})
-// })
 
 module.exports = router

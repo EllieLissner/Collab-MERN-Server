@@ -15,12 +15,10 @@ router.post('/register', async (req, res) => {
         //check if user already exists
         const findUser = await db.User.findOne({
             email: req.body.email
-        }).populate('events')
-        console.log('Events populated!')
-        console.log(findUser)
-
+        })
         //if the user is found, don't let them register
         if(findUser) return res.status(400).json({ msg: 'user already exists in the DB'})
+        console.log(findUser)
         //hash password from req.body
         const password = req.body.password
         const salt = 12
@@ -33,26 +31,22 @@ router.post('/register', async (req, res) => {
         })
 
         await newUser.save()
-        res.json('User created!')
-        console.log(newUser)
 
         //create the jwt payload
-        // const payload = {
-        //     name: newUser.name,
-        //     email: newUser.email,
-        //     id: newUser.id,
-        //     events: []
-        // }
+        const payload = {
+            name: newUser.name,
+            email: newUser.email,
+            id: newUser.id
+        }
 
         //sign the jwt and send a response
-        // const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 60 * 60})
-        // res.json({token})
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 60 * 60})
+        res.json({token})
     }catch(error) {
         console.log(error)
         res.status(500).json({msg: 'internal server error'})
     }
 })
-
 //post /user/login -- validate login creds
 router.post('/login', async (req, res) => {
     try{
@@ -80,11 +74,10 @@ router.post('/login', async (req, res) => {
         const token = await jwt.sign(payload, process.env.JWT_SECRET,{ expiresIn: 60 * 60})
         res.json({ token })
     }catch (err) {
-        console.log(error)
+        console.log(err)
         res.status(500).json({msg: 'internal server error'})
     }
 })
-
 // get /auth-locked -- will redirect if a bad (or no) jwt is found
 router.get('/auth-locked', authLockedRoute, (req, res) => {
     // do whatever we like with the user
