@@ -15,12 +15,22 @@ const eventTest = async () => {
         // console.log('newEvent:', newEvent)
         //read -- at login
         const createEvent = new db.Event({
-            title: 'Whitney School',
-            startDate: 'August 21, 2021',
-            endDate: 'August 21, 2021',
-            startTime: '9:00 AM',
-            endTime: '2:30 PM',
-            location: 'Elementary School'
+            kind: "calendar-event",
+            title: "Dinner with Dad",
+            description: "Dinner at that cool resturaunt",
+            location: "Charlie Gittos",
+            creator: {
+              name: "Ellie",
+              userId: "01",
+            },
+            start: {
+              date: '2021-07-15T05:00:00.000Z',
+              time: { hours: null, minutes: null, ap: null, allday: false },
+            },
+            end: {
+              date: '2021-07-15T05:00:00.000Z',
+              time: { hours: null, minutes: null, ap: null, allday: false },
+            }
         })
 
         await createEvent.save()

@@ -1,10 +1,35 @@
 const router = require('express').Router()
+const { format, startOfDay } = require('date-fns')
 const db = require('../../models')
 
 //get /users == test api endpoint
 router.get('/', (req, res) => {
     res.json({msg: 'hi! the calendar endpoint is ok'})
 })
+
+const today = new Date()
+const format1 = format(today, 'MM/dd/yyyy')
+const format2 = startOfDay(today)
+console.log({today, format1, format2: format2.toISOString()})
+
+//ellie test get route
+router.get('/event', async (req, res) => {
+    try{
+        const events = await db.Event.find({"start.date": startOfDay( new Date()).toISOString()})
+        if(events) {
+            res.send(events)
+        } else {
+            res.send({
+                message: "Nothing Scheduled today!"
+            })
+        }
+    }catch(error) {
+        console.log(error)
+        
+        res.status(500).send(error)
+    }
+})
+//end ellie test get route
 
 // post /users == create a new user
 router.post('/createEvent', async (req, res) => {
