@@ -2,21 +2,25 @@ require('dotenv').config()
 const db = require('./models')
 db.connect() //test the db connection
 
-const dbTest = async () => {
+const userTest = async () => {
     try{
-        //Create
         // const newUser = new db.User({
-        //     name: 'oliver cromwell',
-        //     email: 'o@c.com',
-        //     password: 'oliver'
+        //     name: 'shawn',
+        //     email: 's@s.com',
+        //     password: 'shawn',
+        //     events: []
         // })
 
         // await newUser.save()
         // console.log('newuser:', newUser)
+        
         //read -- at login
         const foundUser = await db.User.findOne({
-            name: 'oliver cromwell'
+            _id:  '60ef79a37df1cf1a66e4f687'
         })
+        User.events.push('60ef9a2603e10c25518e0f03')
+            console.log('Event pushed!')
+            console.log(foundUser)
 
         console.log('found user', foundUser)
     }catch(error) {
@@ -24,4 +28,4 @@ const dbTest = async () => {
     }
 }
 
-dbTest()
+userTest()

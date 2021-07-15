@@ -4,59 +4,6 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const authLockedRoute = require('./authLockedRoute.js')
 
-
-// GET for '/'
-// router.get('/', (req, res) => {
-//     res.json({ msg: 'Hi! I am the user endpoint! 👋'})
-// })
-
-// Post stub (Register?)
-// router.post('', (req, res) => {
-//     try {
-
-//     } catch(err) {
-//         console.log(err)
-//         //res.status code
-//     }
-// })
-
-// POST stub (Login?)
-// router.post('', (req, res) => {
-//     try {
-
-//     } catch(err) {
-//         console.log(err)
-//         //res.status code
-//     }
-// })
-
-// PUT Stub (Can be moved)
-// router.put('', (req, res) => {
-//     try {
-
-//     } catch(err) {
-//         console.log(err)
-//         //res.status code
-//     }
-// })
-
-// Delete Stub (Can be moved)
-// router.destroy('', (req, res) => {
-//     try {
-
-//     } catch(err) {
-//         console.log(err)
-//         //res.status code
-//     }
-// })
-
-// Get for authorized route (Profile?)
-// router.get('/', (req, res) => {
-//     // Sends private data
-//     res.json({ msg: 'Hi! I am your profile 👋'})
-// })
-
-
 //get /users == test api endpoint
 router.get('/', (req, res) => {
     res.json({msg: 'hi! the user endpoint is ok'})
@@ -68,10 +15,12 @@ router.post('/register', async (req, res) => {
         //check if user already exists
         const findUser = await db.User.findOne({
             email: req.body.email
-        })
+        }).populate('events')
+        console.log('Events populated!')
+        console.log(findUser)
+
         //if the user is found, don't let them register
         if(findUser) return res.status(400).json({ msg: 'user already exists in the DB'})
-        console.log(findUser)
         //hash password from req.body
         const password = req.body.password
         const salt = 12
@@ -84,22 +33,26 @@ router.post('/register', async (req, res) => {
         })
 
         await newUser.save()
+        res.json('User created!')
+        console.log(newUser)
 
         //create the jwt payload
-        const payload = {
-            name: newUser.name,
-            email: newUser.email,
-            id: newUser.id
-        }
+        // const payload = {
+        //     name: newUser.name,
+        //     email: newUser.email,
+        //     id: newUser.id,
+        //     events: []
+        // }
 
         //sign the jwt and send a response
-        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 60 * 60})
-        res.json({token})
+        // const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 60 * 60})
+        // res.json({token})
     }catch(error) {
         console.log(error)
         res.status(500).json({msg: 'internal server error'})
     }
 })
+
 //post /user/login -- validate login creds
 router.post('/login', async (req, res) => {
     try{
@@ -131,6 +84,7 @@ router.post('/login', async (req, res) => {
         res.status(500).json({msg: 'internal server error'})
     }
 })
+
 // get /auth-locked -- will redirect if a bad (or no) jwt is found
 router.get('/auth-locked', authLockedRoute, (req, res) => {
     // do whatever we like with the user
