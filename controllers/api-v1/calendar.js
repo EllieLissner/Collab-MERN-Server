@@ -1,12 +1,12 @@
 const router = require('express').Router()
 const { format, startOfDay } = require('date-fns')
 const db = require('../../models')
-
+const authLockedRoute = require('./authLockedRoute.js')
 
 //get route to render events for today
 router.get('/event', async (req, res) => {
     try{
-        const events = await db.Event.find({"start.date": startOfDay( new Date()).toISOString()})
+        const events = await db.Event.find({"start.date": startOfDay( new Date()).toISOString()}).populate('users')
         if(events) {
             res.send(events)
         } else {
@@ -32,7 +32,9 @@ router.get('/allevents', async (req, res) => {
 router.post('/createEvent', async (req, res) => {
     try{
         // create our new event
-        const newEvent = db.Event({
+        const foundUser =  await db.User.findById(req.body.userId)
+        // console.log(req.body.userId, '🚀') 
+        const newEvent = await db.Event.create({
 
             kind: req.body.kind,
             title: req.body.title,
@@ -52,9 +54,11 @@ router.post('/createEvent', async (req, res) => {
             }
         
         })
-        
-        await newEvent.save()
 
+        newEvent.users.push(foundUser._id)
+        foundUser.events.push(newEvent._id)
+        await newEvent.save()
+        await foundUser.save()
         // const foundEvent = await db.Event.findOne({
         //     name: req.body.name,
         //     _id: req.body._id
@@ -75,7 +79,6 @@ router.put('/editevent/:id', async (req, res) => {
         // console.log(updateEvent)
     } catch (error) {
         res.status(500).send(error)
-        console.log(error)
     }
 })
 

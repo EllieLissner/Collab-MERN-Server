@@ -17,7 +17,8 @@ const EventSchema = new mongoose.Schema({
             end: {
               date: String,
               time: { hours: String, minutes: String, ap: String, allday: Boolean },
-            }
+            },
+            users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user'}]
 }, {
     timestamps: true
 })
