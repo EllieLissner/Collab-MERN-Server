@@ -66,6 +66,7 @@ router.post('/createEvent', async (req, res) => {
         // res.json({ msg: 'Users Populated!'})
         // console.log(foundEvent)
     }catch(error) {
+        console.log(error)
         res.status(500).json({msg: 'Event creation failed!'})
     }
 })
