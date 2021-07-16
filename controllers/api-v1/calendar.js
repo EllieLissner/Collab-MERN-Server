@@ -6,7 +6,10 @@ const authLockedRoute = require('./authLockedRoute.js')
 //get route to render events for today
 router.get('/event', async (req, res) => {
     try{
-        const events = await db.Event.find({"start.date": startOfDay( new Date()).toISOString()}).populate('users')
+        const events = await db.Event.find({"start.date": startOfDay( new Date()).toISOString()})
+        
+        //Future work for sharing
+        // .populate('users')
         if(events) {
             res.send(events)
         } else {
