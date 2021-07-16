@@ -65,8 +65,8 @@ router.post('/createEvent', async (req, res) => {
         // }).populate('users')
         // res.json({ msg: 'Users Populated!'})
         // console.log(foundEvent)
+        res.send(newEvent)
     }catch(error) {
-        console.log(error)
         res.status(500).json({msg: 'Event creation failed!'})
     }
 })
@@ -86,7 +86,7 @@ router.put('/editevent/:id', async (req, res) => {
 router.delete('/deleteevent/:id', async (req, res) => {
     try{
         const deleteEvent = await db.Event.findByIdAndDelete(req.params.id)
-        // res.redirect('/api-v1/calendar/allevents')
+        res.redirect('/api-v1/calendar/allevents')
     }catch(error){
         res.status(500).json({msg: 'Event deletion failed!'})
     }
