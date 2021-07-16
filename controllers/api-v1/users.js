@@ -18,7 +18,6 @@ router.post('/register', async (req, res) => {
         })
         //if the user is found, don't let them register
         if(findUser) return res.status(400).json({ msg: 'user already exists in the DB'})
-        console.log(findUser)
         //hash password from req.body
         const password = req.body.password
         const salt = 12
@@ -43,7 +42,6 @@ router.post('/register', async (req, res) => {
         const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 60 * 60})
         res.json({token})
     }catch(error) {
-        console.log(error)
         res.status(500).json({msg: 'internal server error'})
     }
 })
@@ -53,7 +51,7 @@ router.post('/login', async (req, res) => {
         // try to find the user in the db from the req.body.email
         const findUser = await db.User.findOne({
             email: req.body.email
-        })
+        }).populate('events')
 
         const validationFailedMessage = 'Incorrect username or password 😢'
         //if the user is not found -- return immediately
@@ -68,20 +66,17 @@ router.post('/login', async (req, res) => {
         const payload = {
             name: findUser.name,
             email: findUser.email,
-            if: findUser.id
+            id: findUser.id
         }
         //sign the jwt and send it back
         const token = await jwt.sign(payload, process.env.JWT_SECRET,{ expiresIn: 60 * 60})
         res.json({ token })
     }catch (err) {
-        console.log(err)
         res.status(500).json({msg: 'internal server error'})
     }
 })
 // get /auth-locked -- will redirect if a bad (or no) jwt is found
 router.get('/auth-locked', authLockedRoute, (req, res) => {
-    // do whatever we like with the user
-    console.log(res.locals.user)
     // send private data back
     res.json({msg: 'welcome to the auth-locked route you lucky dog! 🐩'})
 })

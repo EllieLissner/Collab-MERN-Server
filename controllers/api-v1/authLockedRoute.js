@@ -13,7 +13,6 @@ const authLockedRoute = async (req, res, next) => {
         res.locals.user = foundUser
         next()
     }catch(error){
-        console.log(error)
         res.status(401).json({msg: 'you are not allowed to be here'})
     }
 }
